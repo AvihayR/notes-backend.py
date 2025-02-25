@@ -12,6 +12,7 @@ def get_notes():
         
     except ClientError as err:
         print('There was an issue getting notes, try again later', err)
+        return
         
     if 'Items' in response:
         return response['Items']
@@ -30,11 +31,31 @@ def get_note(note_id):
             })
     
     except ClientError as err:
-        print(f'There was an issue getting note with the ID of: {note_id}, please try again later.')
+        print(f'There was an issue getting note with the ID of: {note_id}, please try again later.', err)
+        return
 
     if 'Item' in response:
         return response["Item"]
     else:
         return f'No note with ID of "{note_id}" found.'
 
-print(get_notes())
+
+def create_note(note_id, desc):
+    try:
+        response = dynamodb.put_item(
+            TableName='notes',
+            Item={
+                'note_id': {
+                    'S': note_id
+                    },
+                'desc': {
+                    'S':desc
+                    }
+            })
+    
+    except ClientError as err:
+        print('There was an issue creating a note, please try again later.', err)
+        return
+    
+    print(response)
+    return response
