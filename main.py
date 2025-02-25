@@ -1,6 +1,14 @@
+import os
+import uuid
 from fastapi import FastAPI
 from pydantic import BaseModel
-import uuid
+from dotenv import find_dotenv, load_dotenv
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+NAME = os.getenv("NAME")
+print(NAME)
 
 class Note(BaseModel):
     note_id: str | None = None
