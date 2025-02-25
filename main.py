@@ -1,14 +1,7 @@
-import os
 import uuid
 from fastapi import FastAPI
 from pydantic import BaseModel
-from dotenv import find_dotenv, load_dotenv
-
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
-
-NAME = os.getenv("NAME")
-print(NAME)
+import dynamodb
 
 class Note(BaseModel):
     note_id: str | None = None
