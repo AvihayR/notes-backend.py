@@ -1,6 +1,7 @@
+import uuid
 from fastapi import FastAPI
 from pydantic import BaseModel
-import uuid
+import dynamodb
 
 class Note(BaseModel):
     note_id: str | None = None
