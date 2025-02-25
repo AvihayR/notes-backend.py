@@ -11,8 +11,10 @@ def create_id():
     id = uuid.uuid4()
     return str(id)
 
+
 note_list = []
 app = FastAPI()
+# dynamodb.create_note(note_id=create_id(), desc='New note from Python!!! ')
 
 
 @app.get("/")
