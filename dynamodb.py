@@ -1,9 +1,11 @@
+# This file is filled with CRUD operations over a DynamoDB table by the name of "notes".
+
 import boto3
 from botocore.exceptions import ClientError
 
 dynamodb = boto3.client('dynamodb', region_name='il-central-1')
 
-
+# Read (all) operation:
 def get_notes():
     try:
         response = dynamodb.scan(
@@ -20,6 +22,7 @@ def get_notes():
         raise Exception('Hmm.. seems like there\'s no notes yet..')
 
 
+# Read (single) operation:
 def get_note(note_id):
     try:
         response = dynamodb.get_item(
@@ -40,7 +43,7 @@ def get_note(note_id):
          raise Exception(f'No note with ID of "{note_id}" found.')
 
 
-
+# Create (single) operation:
 def create_note(note_id, desc):
     try:
         response = dynamodb.put_item(
@@ -60,7 +63,7 @@ def create_note(note_id, desc):
     return response
 
 
-
+# Delete (single) operation:
 def delete_note(note_id):
     try:
         note = get_note(note_id)
@@ -79,7 +82,7 @@ def delete_note(note_id):
     return response
 
 
-
+# Update (single) operation:
 def update_note(note_id, desc):
     try:
         note = get_note(note_id)
@@ -100,8 +103,3 @@ def update_note(note_id, desc):
         raise Exception(f'There was an issue with updating the note with the ID of: "{note_id}", please try again later.', err)
 
     return response
-
-# print(create_note(note_id='test-1-py', desc="aaa"))
-# print(update_note(note_id='test-1222-py', desc="bbb"))
-# print(update_note(note_id='test-2-py', desc="bbb"))
-# print(delete_note(note_id='ttt1'))
