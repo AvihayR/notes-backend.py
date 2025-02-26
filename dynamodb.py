@@ -79,5 +79,29 @@ def delete_note(note_id):
     return response
 
 
-# print(create_note(note_id='ttt1', desc="aaa"))
+
+def update_note(note_id, desc):
+    try:
+        note = get_note(note_id)
+        if(note):
+            response = dynamodb.put_item(
+            TableName='notes',
+            Item={
+                'note_id': {
+                    'S': note_id
+                    },
+                'desc': {
+                    'S':desc
+                    }
+                }),
+
+
+    except ClientError as err:
+        raise Exception(f'There was an issue with updating the note with the ID of: "{note_id}", please try again later.', err)
+
+    return response
+
+# print(create_note(note_id='test-1-py', desc="aaa"))
+# print(update_note(note_id='test-1222-py', desc="bbb"))
+# print(update_note(note_id='test-2-py', desc="bbb"))
 # print(delete_note(note_id='ttt1'))
