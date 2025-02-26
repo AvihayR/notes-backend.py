@@ -17,7 +17,7 @@ def get_notes():
     if 'Items' in response:
         return response['Items']
     else:
-        return f'Hmm.. seems like there\'s no notes yet.. please try again later'
+        raise Exception('Hmm.. seems like there\'s no notes yet..')
 
 
 def get_note(note_id):
@@ -37,7 +37,8 @@ def get_note(note_id):
     if 'Item' in response:
         return response["Item"]
     else:
-        return f'No note with ID of "{note_id}" found.'
+         raise Exception(f'No note with ID of "{note_id}" found.')
+
 
 
 def create_note(note_id, desc):
@@ -54,8 +55,29 @@ def create_note(note_id, desc):
             })
     
     except ClientError as err:
-        print('There was an issue creating a note, please try again later.', err)
-        return
+        raise Exception('There was an issue creating a note, please try again later.', err)
     
-    print(response)
     return response
+
+
+
+def delete_note(note_id):
+    try:
+        note = get_note(note_id)
+        if(note):
+            response = dynamodb.delete_item(
+                TableName='notes',
+                Key={
+                    'note_id': {
+                        'S': note_id
+                    }   
+                })
+
+    except ClientError as err:
+        raise Exception(f'There was an issue with deleting the note with the ID of: "{note_id}", please try again later.', err)
+
+    return response
+
+
+# print(create_note(note_id='ttt1', desc="aaa"))
+# print(delete_note(note_id='ttt1'))
