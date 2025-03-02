@@ -2,6 +2,9 @@ import uuid
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import dynamodb
+from fastapi.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
 
 
 def create_id():
@@ -12,9 +15,21 @@ class Note(BaseModel):
     note_id: str | None = None
     desc: str
 
+# Use env vars for CORS origins depends 
+load_dotenv()
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "")
+CORS_ALLOWED_ORIGINS_LIST = [origin.strip() for origin in CORS_ALLOWED_ORIGINS.split(",") if origin.strip()]
 
 app = FastAPI()
 
+# Allow CORS for allowed Origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ALLOWED_ORIGINS,  # Use the origins defined in the .env
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # GET - Read all notes
 @app.get("/notes")
