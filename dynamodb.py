@@ -17,6 +17,15 @@ def get_notes():
         return
         
     if 'Items' in response:
+        notes = response['Items']
+        for note in notes:
+            note_items = note.items()
+            for key, value in note_items:
+                if 'S' in value:
+                    note[key] = value['S']  
+                else:
+                    note[key] = value['BOOL']
+
         return response['Items']
     else:
         raise Exception('Hmm.. seems like there\'s no notes yet..')
@@ -38,13 +47,21 @@ def get_note(note_id):
         return
 
     if 'Item' in response:
+        note = response['Item']
+        note_items = note.items()
+        for key, value in note_items:
+            if 'S' in value:
+                note[key] = value['S']  
+            else:
+                note[key] = value['BOOL']
+
         return response["Item"]
     else:
          raise Exception(f'No note with ID of "{note_id}" found.')
 
 
 # Create (single) operation:
-def create_note(note_id, desc):
+def create_note(note_id, desc, completed=False):
     try:
         response = dynamodb.put_item(
             TableName='notes',
@@ -54,6 +71,9 @@ def create_note(note_id, desc):
                     },
                 'desc': {
                     'S':desc
+                    },
+                'completed': {
+                    'BOOL':completed 
                     }
             })
     
@@ -83,7 +103,7 @@ def delete_note(note_id):
 
 
 # Update (single) operation:
-def update_note(note_id, desc):
+def update_note(note_id, desc, completed):
     try:
         note = get_note(note_id)
         if(note):
@@ -95,6 +115,9 @@ def update_note(note_id, desc):
                     },
                 'desc': {
                     'S':desc
+                    },
+                'completed': {
+                    'BOOL':completed 
                     }
                 }),
 

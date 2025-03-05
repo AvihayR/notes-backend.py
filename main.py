@@ -14,6 +14,7 @@ def create_id():
 class Note(BaseModel):
     note_id: str | None = None
     desc: str
+    completed: bool = False
 
 # Use env vars for CORS origins depends 
 load_dotenv()
@@ -56,7 +57,7 @@ async def get_note(note_id):
 # POST - Create a new note
 @app.post("/notes/")
 async def create_note(note: Note):
-    new_note = Note(note_id=create_id(), desc=note.desc)
+    new_note = Note(note_id=create_id(), desc=note.desc, completed=note.completed)
     try:
         dynamodb.create_note(**new_note.__dict__)
     except Exception as e:
@@ -68,7 +69,7 @@ async def create_note(note: Note):
 # PUT - Update an existing note
 @app.put("/notes/{note_id}")
 async def update_note(note_id: str, note: Note):
-    note = Note(note_id=note_id, desc=note.desc)
+    note = Note(note_id=note_id, desc=note.desc, completed=note.completed)
     try:
         updated_note = dynamodb.update_note(**note.__dict__)
     except Exception as e:
